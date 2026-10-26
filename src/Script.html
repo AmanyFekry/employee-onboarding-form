@@ -1,0 +1,112 @@
+<script>
+  // ===== 1. قاموس الترجمة =====
+  const translations = {
+    ar: {
+      brand: 'مجموعة نوفا',
+      title: 'نموذج بيانات الموظف الجديد',
+      subtitle: 'من فضلك املأ بياناتك وارفع المستندات المطلوبة',
+      secPersonal: 'البيانات الشخصية',
+      fullName: 'الاسم الكامل',
+      nationality: 'الجنسية',
+      choose: 'اختر...',
+      natEG: 'مصري',
+      natOther: 'غير مصري',
+      nationalId: 'الرقم القومي (14 رقم)',
+      passportNo: 'رقم جواز السفر',
+      residencyExpiry: 'تاريخ انتهاء الإقامة',
+      secContact: 'بيانات التواصل',
+      phone: 'رقم الموبايل',
+      email: 'البريد الإلكتروني',
+      secJob: 'بيانات الوظيفة',
+      department: 'القسم',
+      depHR: 'الموارد البشرية',
+      depFIN: 'المالية',
+      depIT: 'تكنولوجيا المعلومات',
+      depSALES: 'المبيعات',
+      depOPS: 'العمليات',
+      hireDate: 'تاريخ التعيين',
+      secDocs: 'المستندات',
+      photo: 'صورة شخصية',
+      idDoc: 'صورة البطاقة أو جواز السفر',
+      qualification: 'شهادة المؤهل (PDF)',
+      filesHint: 'الحد الأقصى لكل ملف 5 ميجابايت',
+      submit: 'إرسال البيانات',
+      langBtn: 'English'
+    },
+    en: {
+      brand: 'Nova Group',
+      title: 'New Employee Onboarding Form',
+      subtitle: 'Please fill in your details and upload the required documents',
+      secPersonal: 'Personal Information',
+      fullName: 'Full Name',
+      nationality: 'Nationality',
+      choose: 'Select...',
+      natEG: 'Egyptian',
+      natOther: 'Non-Egyptian',
+      nationalId: 'National ID (14 digits)',
+      passportNo: 'Passport Number',
+      residencyExpiry: 'Residency Expiry Date',
+      secContact: 'Contact Information',
+      phone: 'Mobile Number',
+      email: 'Email Address',
+      secJob: 'Job Information',
+      department: 'Department',
+      depHR: 'Human Resources',
+      depFIN: 'Finance',
+      depIT: 'Information Technology',
+      depSALES: 'Sales',
+      depOPS: 'Operations',
+      hireDate: 'Hire Date',
+      secDocs: 'Documents',
+      photo: 'Personal Photo',
+      idDoc: 'ID Card or Passport Copy',
+      qualification: 'Qualification Certificate (PDF)',
+      filesHint: 'Maximum file size is 5 MB',
+      submit: 'Submit',
+      langBtn: 'العربية'
+    }
+  };
+
+  let currentLang = 'ar';
+
+  // ===== 2. تغيير اللغة =====
+  function setLanguage(lang) {
+    currentLang = lang;
+    const dict = translations[lang];
+
+    // نلف على كل عنصر عليه data-i18n ونحط الترجمة
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      const key = el.dataset.i18n;
+      if (dict[key]) el.textContent = dict[key];
+    });
+
+    // اتجاه الصفحة ولغتها
+    document.documentElement.lang = lang;
+    document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+
+    // نص الزرار نفسه
+    document.getElementById('langBtn').textContent = dict.langBtn;
+  }
+
+  document.getElementById('langBtn').addEventListener('click', function () {
+    setLanguage(currentLang === 'ar' ? 'en' : 'ar');
+  });
+
+  // ===== 3. إظهار الحقول حسب الجنسية =====
+  const nationalitySelect = document.getElementById('nationality');
+  const nationalIdGroup   = document.getElementById('nationalIdGroup');
+  const passportGroup     = document.getElementById('passportGroup');
+
+  nationalitySelect.addEventListener('change', function () {
+    const isEgyptian = this.value === 'EG';
+    const isOther    = this.value === 'OTHER';
+
+    nationalIdGroup.hidden = !isEgyptian;
+    passportGroup.hidden   = !isOther;
+
+    // الحقل اللي ظاهر بس هو اللي يبقى مطلوب
+    document.getElementById('nationalId').required      = isEgyptian;
+    document.getElementById('passportNo').required      = isOther;
+    document.getElementById('residencyExpiry').required = isOther;
+  });
+</script>

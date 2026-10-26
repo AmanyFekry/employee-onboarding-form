@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <?!= include('Styles') ?>
+  </head>
+  <body>
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo">N</span>
+        <span data-i18n="brand">مجموعة نوفا</span>
+      </div>
+      <button type="button" id="langBtn" class="lang-btn">English</button>
+    </header>
+
+    <main class="card">
+      <h1 data-i18n="title">نموذج بيانات الموظف الجديد</h1>
+      <p class="subtitle" data-i18n="subtitle">من فضلك املأ بياناتك وارفع المستندات المطلوبة</p>
+
+      <form id="onboardingForm" novalidate>
+
+        <!-- ===== البيانات الشخصية ===== -->
+        <fieldset>
+          <legend data-i18n="secPersonal">البيانات الشخصية</legend>
+
+          <div class="field">
+            <label for="fullName" data-i18n="fullName">الاسم الكامل</label>
+            <input type="text" id="fullName" name="fullName" required>
+          </div>
+
+          <div class="field">
+            <label for="nationality" data-i18n="nationality">الجنسية</label>
+            <select id="nationality" name="nationality" required>
+              <option value="" data-i18n="choose">اختر...</option>
+              <option value="EG" data-i18n="natEG">مصري</option>
+              <option value="OTHER" data-i18n="natOther">غير مصري</option>
+            </select>
+          </div>
+
+          <!-- يظهر للمصري بس -->
+          <div class="field" id="nationalIdGroup" hidden>
+            <label for="nationalId" data-i18n="nationalId">الرقم القومي (14 رقم)</label>
+            <input type="text" id="nationalId" name="nationalId" inputmode="numeric" maxlength="14">
+          </div>
+
+          <!-- يظهروا لغير المصري بس -->
+          <div class="row" id="passportGroup" hidden>
+            <div class="field">
+              <label for="passportNo" data-i18n="passportNo">رقم جواز السفر</label>
+              <input type="text" id="passportNo" name="passportNo">
+            </div>
+            <div class="field">
+              <label for="residencyExpiry" data-i18n="residencyExpiry">تاريخ انتهاء الإقامة</label>
+              <input type="date" id="residencyExpiry" name="residencyExpiry">
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- ===== بيانات التواصل ===== -->
+        <fieldset>
+          <legend data-i18n="secContact">بيانات التواصل</legend>
+          <div class="row">
+            <div class="field">
+              <label for="phone" data-i18n="phone">رقم الموبايل</label>
+              <input type="tel" id="phone" name="phone" inputmode="tel" required>
+            </div>
+            <div class="field">
+              <label for="email" data-i18n="email">البريد الإلكتروني</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- ===== بيانات الوظيفة ===== -->
+        <fieldset>
+          <legend data-i18n="secJob">بيانات الوظيفة</legend>
+          <div class="row">
+            <div class="field">
+              <label for="department" data-i18n="department">القسم</label>
+              <select id="department" name="department" required>
+                <option value="" data-i18n="choose">اختر...</option>
+                <option value="HR" data-i18n="depHR">الموارد البشرية</option>
+                <option value="FIN" data-i18n="depFIN">المالية</option>
+                <option value="IT" data-i18n="depIT">تكنولوجيا المعلومات</option>
+                <option value="SALES" data-i18n="depSALES">المبيعات</option>
+                <option value="OPS" data-i18n="depOPS">العمليات</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="hireDate" data-i18n="hireDate">تاريخ التعيين</label>
+              <input type="date" id="hireDate" name="hireDate" required>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- ===== المستندات ===== -->
+        <fieldset>
+          <legend data-i18n="secDocs">المستندات</legend>
+
+          <div class="field">
+            <label for="photo" data-i18n="photo">صورة شخصية</label>
+            <input type="file" id="photo" name="photo" accept="image/*" required>
+          </div>
+
+          <div class="field">
+            <label for="idDoc" data-i18n="idDoc">صورة البطاقة أو جواز السفر</label>
+            <input type="file" id="idDoc" name="idDoc" accept="image/*,.pdf" required>
+          </div>
+
+          <div class="field">
+            <label for="qualification" data-i18n="qualification">شهادة المؤهل (PDF)</label>
+            <input type="file" id="qualification" name="qualification" accept=".pdf" required>
+          </div>
+
+          <p class="hint" data-i18n="filesHint">الحد الأقصى لكل ملف 5 ميجابايت</p>
+        </fieldset>
+
+        <button type="submit" class="submit-btn" data-i18n="submit">إرسال البيانات</button>
+      </form>
+    </main>
+
+    <?!= include('Script') ?>
+  </body>
+</html>
