@@ -31,7 +31,15 @@
       qualification: 'شهادة المؤهل (PDF)',
       filesHint: 'الحد الأقصى لكل ملف 5 ميجابايت',
       submit: 'إرسال البيانات',
-      langBtn: 'English'
+      langBtn: 'English',
+            errRequired: 'هذا الحقل مطلوب',
+      errNationalId: 'الرقم القومي لازم يكون 14 رقم',
+      errPhone: 'رقم الموبايل غير صحيح',
+      errEmail: 'البريد الإلكتروني غير صحيح',
+      errServer: 'حصلت مشكلة أثناء الإرسال، حاول تاني',
+      sending: 'جاري الإرسال...',
+      successTitle: 'تم إرسال بياناتك بنجاح',
+      successMsg: 'شكرًا لك، هنتواصل معاك قريب.'
     },
     en: {
       brand: 'Nova Group',
@@ -63,7 +71,15 @@
       qualification: 'Qualification Certificate (PDF)',
       filesHint: 'Maximum file size is 5 MB',
       submit: 'Submit',
-      langBtn: 'العربية'
+      langBtn: 'العربية',
+            errRequired: 'This field is required',
+      errNationalId: 'National ID must be 14 digits',
+      errPhone: 'Invalid mobile number',
+      errEmail: 'Invalid email address',
+      errServer: 'Something went wrong, please try again',
+      sending: 'Sending...',
+      successTitle: 'Your data was submitted successfully',
+      successMsg: 'Thank you, we will contact you soon.'
     }
   };
 
@@ -108,5 +124,92 @@
     document.getElementById('nationalId').required      = isEgyptian;
     document.getElementById('passportNo').required      = isOther;
     document.getElementById('residencyExpiry').required = isOther;
+  });
+
+    // ===== 4. التحقق من البيانات =====
+  const form = document.getElementById('onboardingForm');
+  const submitBtn = form.querySelector('.submit-btn');
+  const formError = document.getElementById('formError');
+
+  function clearErrors() {
+    form.querySelectorAll('.field .error-msg').forEach(function (e) { e.remove(); });
+    form.querySelectorAll('.invalid').forEach(function (e) { e.classList.remove('invalid'); });
+    formError.hidden = true;
+  }
+
+  function showError(input, key) {
+    input.classList.add('invalid');
+    const p = document.createElement('p');
+    p.className = 'error-msg';
+    p.dataset.i18n = key;               // عشان تتترجم لو اللغة اتغيرت
+    p.textContent = translations[currentLang][key];
+    input.closest('.field').appendChild(p);
+  }
+
+  function validateForm() {
+    clearErrors();
+    let ok = true;
+
+    // 1) الحقول الإجبارية الظاهرة بس
+    form.querySelectorAll('input, select').forEach(function (input) {
+      if (input.closest('[hidden]')) return;        // نتجاهل المخفي
+      if (input.required && !input.value.trim()) {
+        showError(input, 'errRequired');
+        ok = false;
+      }
+    });
+
+    // 2) قواعد خاصة
+    const nationalId = document.getElementById('nationalId');
+    if (nationalitySelect.value === 'EG' && nationalId.value && !/^\d{14}$/.test(nationalId.value)) {
+      showError(nationalId, 'errNationalId'); ok = false;
+    }
+
+    const phone = document.getElementById('phone');
+    if (phone.value && !/^\+?\d{10,15}$/.test(phone.value.trim())) {
+      showError(phone, 'errPhone'); ok = false;
+    }
+
+    const email = document.getElementById('email');
+    if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+      showError(email, 'errEmail'); ok = false;
+    }
+
+    return ok;
+  }
+
+  // ===== 5. تجميع البيانات وإرسالها =====
+  function getFormData() {
+    const ids = ['fullName', 'nationality', 'nationalId', 'passportNo', 'residencyExpiry',
+                 'phone', 'email', 'department', 'hireDate'];
+    const data = { lang: currentLang };
+    ids.forEach(function (id) { data[id] = document.getElementById(id).value; });
+    return data;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();                 // نمنع الصفحة إنها تعمل reload
+
+    if (!validateForm()) {
+      form.querySelector('.invalid').focus();
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = translations[currentLang].sending;
+
+    google.script.run
+      .withSuccessHandler(function () {
+        form.hidden = true;
+        document.getElementById('successBox').hidden = false;
+      })
+      .withFailureHandler(function (err) {
+        console.error(err);
+        formError.textContent = translations[currentLang].errServer;
+        formError.hidden = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = translations[currentLang].submit;
+      })
+      .submitForm(getFormData());
   });
 </script>

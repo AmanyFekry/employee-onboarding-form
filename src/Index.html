@@ -117,9 +117,14 @@
 
           <p class="hint" data-i18n="filesHint">الحد الأقصى لكل ملف 5 ميجابايت</p>
         </fieldset>
-
+        <p id="formError" class="error-msg" hidden></p>
         <button type="submit" class="submit-btn" data-i18n="submit">إرسال البيانات</button>
       </form>
+        <div id="successBox" class="success" hidden>
+        <div class="success-icon">✓</div>
+        <h2 data-i18n="successTitle">تم إرسال بياناتك بنجاح</h2>
+        <p data-i18n="successMsg">شكرًا لك، هنتواصل معاك قريب.</p>
+      </div>
     </main>
 
     <?!= include('Script') ?>

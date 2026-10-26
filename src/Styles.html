@@ -120,4 +120,21 @@
     .card { margin: 0; border-radius: 0; padding: 20px 16px; }
     .row { grid-template-columns: 1fr; }
   }
+
+    /* ===== الأخطاء ===== */
+  .invalid { border-color: var(--error) !important; }
+  .error-msg { color: var(--error); font-size: 13px; margin: 4px 0 0; }
+  #formError { text-align: center; margin-bottom: 10px; }
+  .submit-btn:disabled { opacity: .6; cursor: wait; }
+
+  /* ===== رسالة النجاح ===== */
+  .success { text-align: center; padding: 30px 10px; }
+  .success-icon {
+    width: 64px; height: 64px; margin: 0 auto 12px;
+    border-radius: 50%;
+    background: #e6f4ea; color: #1e8e3e;
+    display: grid; place-items: center;
+    font-size: 32px; font-weight: 700;
+  }
+  .success h2 { color: var(--primary); margin: 0 0 6px; }
 </style>
