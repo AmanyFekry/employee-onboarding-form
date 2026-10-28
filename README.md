@@ -35,10 +35,10 @@ New hires fill in their details and upload their documents; everything is saved 
 
 | Success message | Mobile view |
 |---|---|
-| ![Success](docs/success.png) | ![Mobile](docs/mobile.png) |
+| ![Success](docs/success.png) | ![Mobile](docs/mobile.jpeg) |
 
 
-| ![Sheet](docs/sheet.png) | ![Email](docs/email.jpeg) |
+| ![Sheet](docs/sheet.png) | ![Email](docs/email.png) |
 
 ## 🏗️ How It Works
 
