@@ -37,9 +37,8 @@ New hires fill in their details and upload their documents; everything is saved 
 |---|---|
 | ![Success](docs/success.png) | ![Mobile](docs/mobile.png) |
 
-| Google Sheet | HR email notification |
-|---|---|
-| ![Sheet](docs/sheet.png) | ![Email](docs/email.png) |
+
+| ![Sheet](docs/sheet.png) | ![Email](docs/email.jpeg) |
 
 ## 🏗️ How It Works
 
