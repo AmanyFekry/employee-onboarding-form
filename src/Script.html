@@ -39,7 +39,10 @@
       errServer: 'حصلت مشكلة أثناء الإرسال، حاول تاني',
       sending: 'جاري الإرسال...',
       successTitle: 'تم إرسال بياناتك بنجاح',
-      successMsg: 'شكرًا لك، هنتواصل معاك قريب.'
+      successMsg: 'شكرًا لك، هنتواصل معاك قريب.',
+      errFileSize: 'حجم الملف أكبر من 5 ميجابايت',
+      errFileType: 'نوع الملف غير مسموح',
+      uploading: 'جاري رفع الملفات...'
     },
     en: {
       brand: 'Nova Group',
@@ -79,7 +82,10 @@
       errServer: 'Something went wrong, please try again',
       sending: 'Sending...',
       successTitle: 'Your data was submitted successfully',
-      successMsg: 'Thank you, we will contact you soon.'
+      successMsg: 'Thank you, we will contact you soon.',
+      errFileSize: 'File is larger than 5 MB',
+      errFileType: 'File type not allowed',
+      uploading: 'Uploading files...'
     }
   };
 
@@ -148,6 +154,23 @@
 
   function validateForm() {
     clearErrors();
+        // 3) الملفات: الحجم والنوع
+    const MAX_FILE = 5 * 1024 * 1024;
+    const fileRules = {
+      photo:         ['image/jpeg', 'image/png', 'image/webp'],
+      idDoc:         ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'],
+      qualification: ['application/pdf']
+    };
+    Object.keys(fileRules).forEach(function (id) {
+      const input = document.getElementById(id);
+      const file = input.files[0];
+      if (!file) return;                         // "مطلوب" اتعمل فوق
+      if (file.size > MAX_FILE) {
+        showError(input, 'errFileSize'); ok = false;
+      } else if (fileRules[id].indexOf(file.type) === -1) {
+        showError(input, 'errFileType'); ok = false;
+      }
+    });
     let ok = true;
 
     // 1) الحقول الإجبارية الظاهرة بس
@@ -187,8 +210,33 @@
     return data;
   }
 
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();                 // نمنع الصفحة إنها تعمل reload
+    // ===== 6. قراءة الملف وتحويله لـ Base64 =====
+  function readFile(file) {
+    return new Promise(function (resolve, reject) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        resolve({
+          name: file.name,
+          mimeType: file.type,
+          base64: reader.result.split(',')[1]   // نشيل "data:...;base64,"
+        });
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function onSubmitFail(err) {
+    console.error(err);
+    formError.textContent = translations[currentLang].errServer;
+    formError.hidden = false;
+    submitBtn.disabled = false;
+    submitBtn.textContent = translations[currentLang].submit;
+  }
+
+  // ===== 7. الإرسال =====
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
 
     if (!validateForm()) {
       form.querySelector('.invalid').focus();
@@ -196,20 +244,25 @@
     }
 
     submitBtn.disabled = true;
-    submitBtn.textContent = translations[currentLang].sending;
+    submitBtn.textContent = translations[currentLang].uploading;
 
-    google.script.run
-      .withSuccessHandler(function () {
-        form.hidden = true;
-        document.getElementById('successBox').hidden = false;
-      })
-      .withFailureHandler(function (err) {
-        console.error(err);
-        formError.textContent = translations[currentLang].errServer;
-        formError.hidden = false;
-        submitBtn.disabled = false;
-        submitBtn.textContent = translations[currentLang].submit;
-      })
-      .submitForm(getFormData());
+    try {
+      const data = getFormData();
+      data.files = {};
+      for (const id of ['photo', 'idDoc', 'qualification']) {
+        data.files[id] = await readFile(document.getElementById(id).files[0]);
+      }
+
+      google.script.run
+        .withSuccessHandler(function () {
+          form.hidden = true;
+          document.getElementById('successBox').hidden = false;
+        })
+        .withFailureHandler(onSubmitFail)
+        .submitForm(data);
+
+    } catch (err) {
+      onSubmitFail(err);
+    }
   });
 </script>
