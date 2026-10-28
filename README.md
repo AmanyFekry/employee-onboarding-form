@@ -29,15 +29,14 @@ New hires fill in their details and upload their documents; everything is saved 
 |---|---|
 | ![Arabic form](docs/form-ar.png) | ![English form](docs/form-en.png) |
 
-| Conditional fields | Validation |
-|---|---|
-|
+
 
 | Success message | Mobile view |
 |---|---|
 | ![Success](docs/success.png) | ![Mobile](docs/mobile.jpeg) |
 
-
+| Google Sheet | HR email notification |
+|---|---|
 | ![Sheet](docs/sheet.png) | ![Email](docs/email.png) |
 
 ## 🏗️ How It Works
